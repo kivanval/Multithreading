@@ -13,7 +13,7 @@ public class MultithreadingApplication {
         Path pathDirOne = FileSystems.getDefault().getPath("src/main/resources/threadOne");
         Path pathDirTwo = FileSystems.getDefault().getPath("src/main/resources/threadTwo");
         AnalyzerTextPool pool = AnalyzerTextPool.builder()
-                .addThread(pathDirOne, ResourceStrategy.RECURSIVE_RESOURCE)
+                .addThread(pathDirOne, ResourceStrategy.RECURSIVE)
                 .build();
         System.out.println(pool.execute());
         pool.shutdown();
