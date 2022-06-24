@@ -37,7 +37,9 @@ public class AnalyzerTextPool {
     public SummarizeInformation execute() {
         HashMap<String, Long> map = new HashMap<>();
 
-        ForkJoinPool.commonPool().invokeAll(callables).parallelStream()
+        ForkJoinPool pool = new ForkJoinPool(callables.size());
+
+        pool.invokeAll(callables).parallelStream()
                 .map(AnalyzerTextPool::silentFutureGet)
                 .map(Map::entrySet)
                 .flatMap(Set::stream)
