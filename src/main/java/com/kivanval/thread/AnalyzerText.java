@@ -11,8 +11,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingByConcurrent;
 
 public class AnalyzerText implements Callable<Map<String, Long>> {
 
@@ -30,7 +32,7 @@ public class AnalyzerText implements Callable<Map<String, Long>> {
                 .map(l -> l.split("[\\s\\p{P}]+"))
                 .flatMap(Arrays::stream)
                 .map(WordUtils::capitalize)
-                .collect(Collectors.groupingByConcurrent(Function.identity(), Collectors.counting()));
+                .collect(groupingByConcurrent(Function.identity(), counting()));
     }
 
     private static Stream<String> silentFilesLines(Path path) {
