@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
@@ -16,12 +16,10 @@ import java.util.stream.Stream;
 
 public class AnalyzerText implements Callable<Map<String, Long>> {
 
-    List<Path> srcPaths;
+    Collection<Path> srcPaths;
 
-    public AnalyzerText(Path directory) throws IOException {
-        try (Stream<Path> paths = Files.list(directory).filter(Files::isRegularFile)) {
-            this.srcPaths = paths.collect(Collectors.toList());
-        }
+    public AnalyzerText(Collection<Path> paths) throws IOException {
+        this.srcPaths = paths;
     }
 
     @Override

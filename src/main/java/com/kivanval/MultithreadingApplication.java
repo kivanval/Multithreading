@@ -1,6 +1,7 @@
 package com.kivanval;
 
 import com.kivanval.thread.AnalyzerTextPool;
+import com.kivanval.thread.ResourceStrategy;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -12,8 +13,7 @@ public class MultithreadingApplication {
         Path pathDirOne = FileSystems.getDefault().getPath("src/main/resources/threadOne");
         Path pathDirTwo = FileSystems.getDefault().getPath("src/main/resources/threadTwo");
         AnalyzerTextPool pool = AnalyzerTextPool.builder()
-                .addThread(pathDirOne)
-                .addThread(pathDirTwo)
+                .addThread(pathDirOne, ResourceStrategy.RECURSIVE_RESOURCE)
                 .build();
         System.out.println(pool.execute());
         pool.shutdown();

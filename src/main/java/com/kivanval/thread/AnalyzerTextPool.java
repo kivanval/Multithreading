@@ -1,10 +1,10 @@
 package com.kivanval.thread;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Function;
 
 import static java.util.stream.Collectors.*;
 
@@ -20,12 +20,13 @@ public class AnalyzerTextPool {
     public static class AnalyzerTextPoolBuilder {
         AnalyzerTextPool pool = new AnalyzerTextPool();
 
-        public AnalyzerTextPoolBuilder addThread(Path directory) throws IOException {
-            if (Files.isDirectory(directory)) {
-                pool.callables.add(new AnalyzerText(directory));
-            } else {
-                throw new RuntimeException();
-            }
+        public AnalyzerTextPoolBuilder addThread(Path path, Function<Path, ? extends Collection<Path>> strategy) throws IOException {
+            pool.callables.add(new AnalyzerText(strategy.apply(path)));
+            return this;
+        }
+
+        public AnalyzerTextPoolBuilder addThread(Path path) throws IOException {
+            pool.callables.add(new AnalyzerText(ResourceStrategy.SINGLE_RESOURCE.apply(path)));
             return this;
         }
 
