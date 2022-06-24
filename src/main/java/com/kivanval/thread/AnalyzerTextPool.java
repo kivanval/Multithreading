@@ -20,7 +20,7 @@ public class AnalyzerTextPool {
     public static class AnalyzerTextPoolBuilder {
         AnalyzerTextPool pool = new AnalyzerTextPool();
 
-        public AnalyzerTextPoolBuilder addThread(Path path, Function<Path, ? extends Collection<Path>> strategy) throws IOException {
+        public AnalyzerTextPoolBuilder addThread(Path path, Function<Path, ? extends Collection<Path>> strategy) {
             pool.callables.add(new AnalyzerText(strategy.apply(path)));
             return this;
         }
