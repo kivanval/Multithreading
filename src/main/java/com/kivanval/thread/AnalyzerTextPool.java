@@ -4,16 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class AnalyzerTextPool {
     private final List<Callable<Map<String, Long>>> callables = new ArrayList<>();
 
-    private ForkJoinPool innerPool;
+    private ExecutorService executorService;
 
     public static AnalyzerTextPoolBuilder builder() {
         return new AnalyzerTextPoolBuilder();
@@ -32,15 +29,15 @@ public class AnalyzerTextPool {
         }
 
         public AnalyzerTextPool build() {
-            pool.innerPool = new ForkJoinPool(pool.callables.size());
+            pool.executorService = Executors.newFixedThreadPool(pool.callables.size());
             return pool;
         }
     }
 
-    public SummarizeInformation execute() {
+    public SummarizeInformation execute() throws InterruptedException {
         HashMap<String, Long> map = new HashMap<>();
 
-        innerPool.invokeAll(callables)
+        executorService.invokeAll(callables)
                 .parallelStream()
                 .map(AnalyzerTextPool::silentFutureGet)
                 .map(Map::entrySet)
@@ -51,7 +48,7 @@ public class AnalyzerTextPool {
                 .parallelStream()
                 .mapToLong(Long::longValue)
                 .summaryStatistics();
-        SummarizeInformation si = new SummarizeInformation();
+        SummarizeInformation textStatistics = new SummarizeInformation();
 
         long min = statistics.getMin();
         List<String> minWords = map.entrySet().
@@ -59,8 +56,8 @@ public class AnalyzerTextPool {
                 .filter(e -> e.getValue().equals(min))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-        si.setMin(min);
-        si.setMinWords(minWords);
+        textStatistics.setMin(min);
+        textStatistics.setMinWords(minWords);
 
         long max = statistics.getMax();
         List<String> maxWords = map.entrySet()
@@ -68,13 +65,13 @@ public class AnalyzerTextPool {
                 .filter(e -> e.getValue().equals(max))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-        si.setMax(max);
-        si.setMaxWords(maxWords);
+        textStatistics.setMax(max);
+        textStatistics.setMaxWords(maxWords);
 
         long count = statistics.getSum();
-        si.setCount(count);
+        textStatistics.setCount(count);
 
-        return si;
+        return textStatistics;
 
     }
 
