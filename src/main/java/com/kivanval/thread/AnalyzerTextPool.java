@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 public class AnalyzerTextPool {
     private final List<Callable<Map<String, Long>>> callables = new ArrayList<>();
 
+    private ForkJoinPool innerPool;
+
     public static AnalyzerTextPoolBuilder builder() {
         return new AnalyzerTextPoolBuilder();
     }
@@ -30,6 +32,7 @@ public class AnalyzerTextPool {
         }
 
         public AnalyzerTextPool build() {
+            pool.innerPool = new ForkJoinPool(pool.callables.size());
             return pool;
         }
     }
@@ -37,9 +40,7 @@ public class AnalyzerTextPool {
     public SummarizeInformation execute() {
         HashMap<String, Long> map = new HashMap<>();
 
-        ForkJoinPool pool = new ForkJoinPool(callables.size());
-
-        pool.invokeAll(callables)
+        innerPool.invokeAll(callables)
                 .parallelStream()
                 .map(AnalyzerTextPool::silentFutureGet)
                 .map(Map::entrySet)
