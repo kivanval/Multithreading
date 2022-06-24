@@ -19,9 +19,9 @@ public final class ResourceStrategy {
 
     }
 
-    public static Function<Path, Collection<Path>> SINGLE_RESOURCE = Collections::singleton;
+    public final static Function<Path, Collection<Path>> SINGLE_RESOURCE = Collections::singleton;
 
-    public static Function<Path, List<Path>> DIRECTORY_RESOURCE = (path) -> {
+    public final static Function<Path, List<Path>> DIRECTORY_RESOURCE = (path) -> {
         try (Stream<Path> paths = Files.list(path).filter(Files::isRegularFile)) {
             return paths.collect(Collectors.toList());
         } catch (IOException e) {
@@ -29,7 +29,7 @@ public final class ResourceStrategy {
         }
     };
 
-    public static Function<Path, List<Path>> RECURSIVE_RESOURCE = (path) -> {
+    public final static Function<Path, List<Path>> RECURSIVE_RESOURCE = (path) -> {
         List<Path> paths = new ArrayList<>();
         try {
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
