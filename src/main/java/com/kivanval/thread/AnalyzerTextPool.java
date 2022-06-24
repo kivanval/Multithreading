@@ -36,22 +36,18 @@ public class AnalyzerTextPool {
 
     public SummarizeInformation execute() {
         HashMap<String, Long> map = new HashMap<>();
-        Set<Map.Entry<String, Long>> set = ForkJoinPool.commonPool().invokeAll(callables).stream()
-                .map(AnalyzerTextPool::silentFutureGet)
-                .map(Map::entrySet)
-                .flatMap(Set::stream)
-                .collect(Collectors.toSet());
-        ForkJoinPool.commonPool().invokeAll(callables).stream()
+
+        ForkJoinPool.commonPool().invokeAll(callables).parallelStream()
                 .map(AnalyzerTextPool::silentFutureGet)
                 .map(Map::entrySet)
                 .flatMap(Set::stream)
                 .forEach(e -> map.merge(e.getKey(), e.getValue(), Long::sum));
 
-        LongSummaryStatistics statistics = map.values().stream().mapToLong(Long::longValue).summaryStatistics();
+        LongSummaryStatistics statistics = map.values().parallelStream().mapToLong(Long::longValue).summaryStatistics();
         SummarizeInformation si = new SummarizeInformation();
 
         long min = statistics.getMin();
-        List<String> minWords = map.entrySet().stream()
+        List<String> minWords = map.entrySet().parallelStream()
                 .filter(e -> e.getValue().equals(min))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
@@ -59,7 +55,7 @@ public class AnalyzerTextPool {
         si.setMinWords(minWords);
 
         long max = statistics.getMax();
-        List<String> maxWords = map.entrySet().stream()
+        List<String> maxWords = map.entrySet().parallelStream()
                 .filter(e -> e.getValue().equals(max))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
