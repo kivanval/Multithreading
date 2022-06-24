@@ -23,7 +23,8 @@ public class AnalyzerText implements Callable<Map<String, Long>> {
 
     @Override
     public Map<String, Long> call() throws Exception {
-        List<String> words = srcPaths.stream()
+        List<String> words = srcPaths
+                .parallelStream()
                 .flatMap(AnalyzerText::silentFilesLines)
                 .flatMap(l -> Arrays.stream(l.trim().split("\\s+")))
                 .collect(Collectors.toList());
