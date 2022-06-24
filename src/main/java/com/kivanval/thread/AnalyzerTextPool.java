@@ -5,7 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 public class AnalyzerTextPool {
     private final List<Callable<Map<String, Long>>> callables = new ArrayList<>();
@@ -35,14 +36,12 @@ public class AnalyzerTextPool {
     }
 
     public SummarizeInformation execute() throws InterruptedException {
-        Map<String, Long> map = new ConcurrentHashMap<>();
-
-        executorService.invokeAll(callables)
+        Map<String, Long> map = executorService.invokeAll(callables)
                 .parallelStream()
                 .map(AnalyzerTextPool::silentFutureGet)
                 .map(Map::entrySet)
                 .flatMap(Set::stream)
-                .forEach(e -> map.merge(e.getKey(), e.getValue(), Long::sum));
+                .collect(groupingByConcurrent(Map.Entry::getKey, summingLong(Map.Entry::getValue)));
 
         LongSummaryStatistics statistics = map.values()
                 .parallelStream()
@@ -55,7 +54,7 @@ public class AnalyzerTextPool {
                 parallelStream()
                 .filter(e -> e.getValue().equals(min))
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .collect(toList());
         textStatistics.setMin(min);
         textStatistics.setMinWords(minWords);
 
@@ -64,7 +63,7 @@ public class AnalyzerTextPool {
                 .parallelStream()
                 .filter(e -> e.getValue().equals(max))
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .collect(toList());
         textStatistics.setMax(max);
         textStatistics.setMaxWords(maxWords);
 

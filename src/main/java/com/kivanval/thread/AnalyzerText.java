@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,17 +26,13 @@ public class AnalyzerText implements Callable<Map<String, Long>> {
 
     @Override
     public Map<String, Long> call() {
-        List<String> words = srcPaths
-                .parallelStream()
+        return srcPaths.parallelStream()
                 .flatMap(AnalyzerText::silentFilesLines)
                 .map(StringUtils::strip)
                 .map(l -> l.split("[\\s\\p{P}]+"))
                 .flatMap(Arrays::stream)
                 .map(WordUtils::capitalize)
-                .collect(Collectors.toList());
-        Map<String, Long> map = new HashMap<>();
-        words.forEach(w -> map.merge(w, 1L, Long::sum));
-        return map;
+                .collect(Collectors.groupingByConcurrent(Function.identity(), Collectors.counting()));
     }
 
     private static Stream<String> silentFilesLines(Path path) {
