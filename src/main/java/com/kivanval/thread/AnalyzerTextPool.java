@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class AnalyzerTextPool {
-    List<Callable<Map<String, Long>>> callables = new ArrayList<>();
+    private final List<Callable<Map<String, Long>>> callables = new ArrayList<>();
 
     public static AnalyzerTextPoolBuilder builder() {
         return new AnalyzerTextPoolBuilder();
