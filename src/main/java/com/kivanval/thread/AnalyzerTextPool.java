@@ -1,6 +1,5 @@
 package com.kivanval.thread;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
