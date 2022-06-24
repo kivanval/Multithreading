@@ -43,7 +43,6 @@ public class AnalyzerTextPool {
                 .map(Map::entrySet)
                 .flatMap(Set::stream)
                 .forEach(e -> map.merge(e.getKey(), e.getValue(), Long::sum));
-        executorService.shutdown();
 
         LongSummaryStatistics statistics = map.values()
                 .parallelStream()
@@ -82,6 +81,10 @@ public class AnalyzerTextPool {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void shutdown() {
+        executorService.shutdown();
     }
 
 }

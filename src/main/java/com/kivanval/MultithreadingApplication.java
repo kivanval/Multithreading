@@ -16,5 +16,6 @@ public class MultithreadingApplication {
                 .addThread(pathDirTwo)
                 .build();
         System.out.println(pool.execute());
+        pool.shutdown();
     }
 }
