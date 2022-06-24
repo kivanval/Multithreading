@@ -43,7 +43,9 @@ public class AnalyzerTextPool {
                 .flatMap(Set::stream)
                 .forEach(e -> map.merge(e.getKey(), e.getValue(), Long::sum));
 
-        LongSummaryStatistics statistics = map.values().parallelStream().mapToLong(Long::longValue).summaryStatistics();
+        LongSummaryStatistics statistics = map.values().parallelStream()
+                .mapToLong(Long::longValue)
+                .summaryStatistics();
         SummarizeInformation si = new SummarizeInformation();
 
         long min = statistics.getMin();
