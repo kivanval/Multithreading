@@ -16,14 +16,14 @@ import java.util.stream.Stream;
 
 public enum ResourceStrategy implements Function<Path, Collection<Path>> {
 
-    SINGLE_RESOURCE() {
+    SINGLE() {
         @Override
         public List<Path> apply(Path path) {
             return Collections.singletonList(path);
         }
     },
 
-    DIRECTORY_RESOURCE() {
+    DIRECTORY() {
         @Override
         public List<Path> apply(Path path) {
             try (Stream<Path> paths = Files.list(path).filter(Files::isRegularFile)) {
@@ -34,7 +34,7 @@ public enum ResourceStrategy implements Function<Path, Collection<Path>> {
         }
     },
 
-    RECURSIVE_RESOURCE() {
+    RECURSIVE() {
         @Override
         public List<Path> apply(Path path) {
             List<Path> paths = new ArrayList<>();
