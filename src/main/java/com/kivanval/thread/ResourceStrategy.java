@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public enum ResourceStrategy implements Function<Path, Collection<Path>> {
 
-    SINGLE() {
+    FILE() {
         @Override
         public List<Path> apply(Path path) {
             return Collections.singletonList(path);

@@ -25,7 +25,7 @@ public class AnalyzerTextPool {
         }
 
         public AnalyzerTextPoolBuilder addThread(Path path) {
-            pool.callables.add(new AnalyzerText(ResourceStrategy.SINGLE.apply(path)));
+            pool.callables.add(new AnalyzerText(ResourceStrategy.FILE.apply(path)));
             return this;
         }
 
