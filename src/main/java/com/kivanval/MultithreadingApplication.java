@@ -11,12 +11,10 @@ public class MultithreadingApplication {
     public static void main(String[] args) throws IOException, InterruptedException {
         Path pathDirOne = FileSystems.getDefault().getPath("src/main/resources/threadOne");
         Path pathDirTwo = FileSystems.getDefault().getPath("src/main/resources/threadTwo");
-        System.out.println(
-                AnalyzerTextPool.builder()
-                        .addThread(pathDirOne)
-                        .addThread(pathDirTwo)
-                        .build()
-                        .execute()
-        );
+        AnalyzerTextPool pool = AnalyzerTextPool.builder()
+                .addThread(pathDirOne)
+                .addThread(pathDirTwo)
+                .build();
+        System.out.println(pool.execute());
     }
 }

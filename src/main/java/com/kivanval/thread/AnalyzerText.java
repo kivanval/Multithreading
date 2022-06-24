@@ -28,7 +28,7 @@ public class AnalyzerText implements Callable<Map<String, Long>> {
                 .flatMap(AnalyzerText::silentFilesLines)
                 .flatMap(l -> Arrays.stream(l.trim().split("\\s+")))
                 .collect(Collectors.toList());
-        HashMap<String, Long> map = new HashMap<>();
+        Map<String, Long> map = new HashMap<>();
         words.forEach(w -> map.merge(w, 1L, Long::sum));
         return map;
     }

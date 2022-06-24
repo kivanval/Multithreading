@@ -35,7 +35,7 @@ public class AnalyzerTextPool {
     }
 
     public SummarizeInformation execute() throws InterruptedException {
-        HashMap<String, Long> map = new HashMap<>();
+        Map<String, Long> map = new ConcurrentHashMap<>();
 
         executorService.invokeAll(callables)
                 .parallelStream()
@@ -43,6 +43,7 @@ public class AnalyzerTextPool {
                 .map(Map::entrySet)
                 .flatMap(Set::stream)
                 .forEach(e -> map.merge(e.getKey(), e.getValue(), Long::sum));
+        executorService.shutdown();
 
         LongSummaryStatistics statistics = map.values()
                 .parallelStream()
@@ -82,6 +83,5 @@ public class AnalyzerTextPool {
             throw new RuntimeException(e);
         }
     }
-
 
 }
