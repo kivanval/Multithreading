@@ -18,7 +18,7 @@ public class AnalyzerText implements Callable<Map<String, Long>> {
 
     Collection<Path> srcPaths;
 
-    public AnalyzerText(Collection<Path> paths) throws IOException {
+    public AnalyzerText(Collection<Path> paths) {
         this.srcPaths = paths;
     }
 

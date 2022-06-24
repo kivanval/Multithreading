@@ -25,7 +25,7 @@ public class AnalyzerTextPool {
             return this;
         }
 
-        public AnalyzerTextPoolBuilder addThread(Path path) throws IOException {
+        public AnalyzerTextPoolBuilder addThread(Path path) {
             pool.callables.add(new AnalyzerText(ResourceStrategy.SINGLE_RESOURCE.apply(path)));
             return this;
         }
