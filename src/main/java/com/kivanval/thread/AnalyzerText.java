@@ -16,7 +16,7 @@ public class AnalyzerText implements Callable<Map<String, Long>> {
     List<Path> srcPaths;
 
     public AnalyzerText(Path directory) throws IOException {
-        try (Stream<Path> paths = Files.list(directory)) {
+        try (Stream<Path> paths = Files.list(directory).filter(Files::isRegularFile)) {
             this.srcPaths = paths.collect(Collectors.toList());
         }
     }
