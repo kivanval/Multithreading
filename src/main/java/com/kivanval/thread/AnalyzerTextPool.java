@@ -50,20 +50,12 @@ public class AnalyzerTextPool {
         SummarizeInformation textStatistics = new SummarizeInformation();
 
         long min = statistics.getMin();
-        List<String> minWords = map.entrySet().
-                parallelStream()
-                .filter(e -> e.getValue().equals(min))
-                .map(Map.Entry::getKey)
-                .collect(toList());
+        List<String> minWords = wordFrequencyIs(map, min);
         textStatistics.setMin(min);
         textStatistics.setMinWords(minWords);
 
         long max = statistics.getMax();
-        List<String> maxWords = map.entrySet()
-                .parallelStream()
-                .filter(e -> e.getValue().equals(max))
-                .map(Map.Entry::getKey)
-                .collect(toList());
+        List<String> maxWords = wordFrequencyIs(map, max);
         textStatistics.setMax(max);
         textStatistics.setMaxWords(maxWords);
 
@@ -72,6 +64,14 @@ public class AnalyzerTextPool {
 
         return textStatistics;
 
+    }
+
+    private List<String> wordFrequencyIs(Map<String, Long> map, Long n) {
+        return map.entrySet()
+                .parallelStream()
+                .filter(e -> e.getValue().equals(n))
+                .map(Map.Entry::getKey)
+                .collect(toList());
     }
 
     private static <T> T silentFutureGet(Future<T> f) {
