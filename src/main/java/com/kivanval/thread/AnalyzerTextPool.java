@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.*;
 
