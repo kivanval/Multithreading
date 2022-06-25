@@ -8,7 +8,7 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.*;
 
 public class AnalyzerTextPool {
-    private final List<Callable<Map<String, Long>>> callables = new ArrayList<>();
+    private List<Callable<Map<String, Long>>> callables;
 
     private ExecutorService executorService;
 
@@ -17,20 +17,22 @@ public class AnalyzerTextPool {
     }
 
     public static class AnalyzerTextPoolBuilder {
-        AnalyzerTextPool pool = new AnalyzerTextPool();
+        List<Callable<Map<String, Long>>> callables = new ArrayList<>();
 
         public AnalyzerTextPoolBuilder addThread(Path path, Function<Path, ? extends Collection<Path>> strategy) {
-            pool.callables.add(new AnalyzerText(strategy.apply(path)));
+            callables.add(new AnalyzerText(strategy.apply(path)));
             return this;
         }
 
         public AnalyzerTextPoolBuilder addThread(Path path) {
-            pool.callables.add(new AnalyzerText(ResourceStrategy.FILE.apply(path)));
+            callables.add(new AnalyzerText(ResourceStrategy.FILE.apply(path)));
             return this;
         }
 
         public AnalyzerTextPool build() {
-            pool.executorService = Executors.newFixedThreadPool(pool.callables.size());
+            AnalyzerTextPool pool = new AnalyzerTextPool();
+            pool.executorService = Executors.newFixedThreadPool(callables.size());
+            pool.callables = callables;
             return pool;
         }
     }

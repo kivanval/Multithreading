@@ -1,8 +1,5 @@
 package com.kivanval.thread;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.WordUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,10 +25,10 @@ public class AnalyzerText implements Callable<Map<String, Long>> {
     public Map<String, Long> call() {
         return srcPaths.parallelStream()
                 .flatMap(AnalyzerText::silentFilesLines)
-                .map(StringUtils::strip)
-                .map(l -> l.split("[\\s\\p{P}]+"))
+                .map(l -> l.replaceAll("[\\s\\p{P}]+", " "))
+                .map(String::trim)
+                .map(l -> l.split(" "))
                 .flatMap(Arrays::stream)
-                .map(WordUtils::capitalize)
                 .collect(groupingByConcurrent(Function.identity(), counting()));
     }
 
