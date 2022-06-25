@@ -32,7 +32,7 @@ public class AnalyzerTextPool {
         public AnalyzerTextPool build() {
             AnalyzerTextPool pool = new AnalyzerTextPool();
             pool.executorService = Executors.newFixedThreadPool(callables.size());
-            pool.callables = callables;
+            pool.callables = Collections.unmodifiableList(callables);
             return pool;
         }
     }
