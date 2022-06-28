@@ -5,14 +5,17 @@ import com.kivanval.thread.ResourceStrategy;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.concurrent.ForkJoinTask;
 
 
 public class MultithreadingApplication {
     public static void main(String[] args) throws InterruptedException {
-        Path src = FileSystems.getDefault().getPath("src/main/resources");
-        AnalyzerTextPool.AnalyzerTextPoolBuilder builder = AnalyzerTextPool.builder();
-        ResourceStrategy.RECURSIVE.apply(src).forEach(builder::addThread);
-        AnalyzerTextPool pool = builder.build();
+        Path dir = FileSystems.getDefault().getPath("src/main/resources/dir");
+        Path file = FileSystems.getDefault().getPath("src/main/resources/srcTwo");
+        AnalyzerTextPool pool = AnalyzerTextPool.builder()
+                .addThread(dir, ResourceStrategy.DIRECTORY)
+                .addThread(file, ResourceStrategy.FILE)
+                .build();
         System.out.println(pool.execute());
         pool.shutdown();
     }
