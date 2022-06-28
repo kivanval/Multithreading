@@ -8,9 +8,14 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.*;
 
 public class AnalyzerTextPool {
-    private List<Callable<Map<String, Long>>> callables;
+    private final List<Callable<Map<String, Long>>> callables;
 
-    private ExecutorService executorService;
+    private final ExecutorService executorService;
+
+    private AnalyzerTextPool(List<Callable<Map<String, Long>>> callables, ExecutorService executorService) {
+        this.callables = callables;
+        this.executorService = executorService;
+    }
 
     public static AnalyzerTextPoolBuilder builder() {
         return new AnalyzerTextPoolBuilder();
@@ -30,10 +35,8 @@ public class AnalyzerTextPool {
         }
 
         public AnalyzerTextPool build() {
-            AnalyzerTextPool pool = new AnalyzerTextPool();
-            pool.executorService = Executors.newFixedThreadPool(callables.size());
-            pool.callables = Collections.unmodifiableList(callables);
-            return pool;
+            return new AnalyzerTextPool(Collections.unmodifiableList(callables),
+                    Executors.newFixedThreadPool(callables.size()));
         }
     }
 
@@ -79,7 +82,10 @@ public class AnalyzerTextPool {
     private static <T> T silentFutureGet(Future<T> f) {
         try {
             return f.get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
