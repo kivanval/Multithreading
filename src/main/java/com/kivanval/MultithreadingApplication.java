@@ -5,7 +5,6 @@ import com.kivanval.thread.ResourceStrategy;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.concurrent.ForkJoinTask;
 
 
 public class MultithreadingApplication {
